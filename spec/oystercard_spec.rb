@@ -22,7 +22,7 @@ describe Oystercard do
     it 'raises an error when overriding maximum balance' do
       max_value = Oystercard::MAXIMUM_LIMIT
       subject.top_up(max_value)
-      expect{ subject.top_up 1 }.to raise_error ValueError
+      expect{ subject.top_up 1 }.to raise_error "Maximum limit of #{ :MAXIMUM_LIMIT } reached"
     end
   end
   
@@ -33,5 +33,17 @@ describe Oystercard do
       expect{ subject.deduct 5 }.to change{ subject.balance }.by -5
     end
   end
-    
+   
+  it { is_expected.to respond_to(:touch_in) }
+
+  it 'returns true when card touches in' do
+    expect(subject.touch_in).to be true 
+  end 
+  
+  it { is_expected.to respond_to(:touch_out) }
+
+  it 'returns true when card touches out' do
+    expect(subject.touch_out).to be true
+  end
+  
 end
