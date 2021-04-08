@@ -10,12 +10,8 @@ class Oystercard
   end
 
   def top_up(value)
-    fail "Maximum balance exceeded" if balance + value > MAXIMUM_LIMIT
+    fail "Maximum balance exceeded" if max?(value)
     @balance += value
-  end
-
-  def deduct(value)
-    @balance -= value
   end
 
   def touch_in
@@ -25,6 +21,7 @@ class Oystercard
   end
   
   def touch_out
+    deduct(MIN_FARE)
     @in_journey = false
   end
   
@@ -36,4 +33,13 @@ class Oystercard
   def min_fare?
     balance < MIN_FARE
   end 
+
+  def max?(value)
+    balance + value > MAXIMUM_LIMIT
+  end
+
+  def deduct(value)
+    @balance -= value
+  end
+
 end
