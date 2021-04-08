@@ -22,7 +22,7 @@ describe Oystercard do
     it 'raises an error when overriding maximum balance' do
       max_value = Oystercard::MAXIMUM_LIMIT
       subject.top_up(max_value)
-      expect{ subject.top_up 1 }.to raise_error "Maximum limit of #{ :MAXIMUM_LIMIT } reached"
+      expect{ subject.top_up 1 }.to raise_error "Maximum balance exceeded"
     end
   end
   
@@ -35,28 +35,24 @@ describe Oystercard do
   end
    
   it { is_expected.to respond_to(:touch_in) }
-
-  it 'returns true when card touches in' do
-    expect(subject.touch_in).to be true 
-  end 
   
   it { is_expected.to respond_to(:touch_out) }
 
-  it 'returns true when card touches out' do
-    expect(subject.touch_out).to be false
-  end
-
   it { is_expected.to respond_to(:in_journey?) }
 
-  it 'returns true for in journey when card is touched in' do
+  it 'is initially not in a journey' do
+    expect(subject.in_journey?).to eq false
+  end
+  
+  it 'turns true when we touch in' do
     subject.touch_in
     expect(subject.in_journey?).to eq true
   end
-
-  it 'returns true for in journey when card is not touched out' do
+   
+  it 'turns when we touch out' do
     subject.touch_in
     subject.touch_out
-    expect(subject).not_to be_in_journey
-  end 
-  # when checking the card state shoud return in use if didn't touch out
+    expect(subject.in_journey?).to eq false
+  end
+  
 end
