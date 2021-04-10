@@ -1,13 +1,17 @@
 class Oystercard
-
-  attr_reader :balance, :entry_station
+  
+  attr_accessor :balance, :entry_station
+  attr_accessor :balance, :entry_station, :list_of_previous_trips, :exit_station
   MAXIMUM_LIMIT = 90
   MIN_FARE = 1
   
   def initialize
     @balance = 0
     @entry_station = nil
+    @list_of_previous_trips = []
+    @exit_station = nil
   end
+
 
   def top_up(value)
     fail "Maximum balance exceeded" if max?(value)
@@ -19,8 +23,10 @@ class Oystercard
     @entry_station = station
   end
   
-  def touch_out
+  def touch_out(station)
     deduct(MIN_FARE)
+    @exit_station = station
+    @list_of_previous_trips << { :entry => @entry_station,:exit => @exit_station }
     @entry_station = nil
   end
   

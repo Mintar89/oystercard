@@ -2,14 +2,12 @@ require 'oystercard'
 
 describe Oystercard do
   let(:station) { double :station }
+  let(:entry_station) { double :station }
+  let(:exit_station) { double :station }
 
   it 'allows the user to create an instance of Oystercard' do
     is_expected.to be_instance_of Oystercard
   end
-
-  # it { is_expected.to respond_to :balance }
-
-  # it { is_expected.to respond_to(:top_up).with(1).argument }
 
   context '#balance' do
     it 'returns a default balance of zero' do
@@ -29,14 +27,6 @@ describe Oystercard do
     end
   end
   
-  # it { is_expected.to respond_to(:deduct).with(1).argument }
-   
-  # it { is_expected.to respond_to(:touch_in) }
-  
-  # it { is_expected.to respond_to(:touch_out) }
-
-  # it { is_expected.to respond_to(:in_journey?) }
-
   context '#in_journey?' do
     it 'is initially not in a journey' do
       expect(subject.in_journey?).to eq nil
@@ -63,12 +53,23 @@ describe Oystercard do
     it 'turns when we touch out' do
       allow(subject).to receive(:min_fare?).and_return false
       subject.touch_in(station)
-      subject.touch_out
+      subject.touch_out(station)
       expect(subject.in_journey?).to eq nil
     end
     it 'charges the minimum amount' do
       min_fare = Oystercard::MIN_FARE
-      expect{ subject.touch_out }.to change { subject.balance }.by -min_fare 
+      expect{ subject.touch_out(station) }.to change { subject.balance }.by -min_fare 
     end
+    it { is_expected.to respond_to(:touch_out).with(1).argument }
   end 
+  
+  context '#list_of_previous_trips' do
+    it 'returns the previous trips' do
+      allow(subject).to receive(:min_fare?).and_return false
+      subject.touch_in(entry_station)
+      subject.touch_out(exit_station)
+      expect(subject.list_of_previous_trips).to eq ([ { :entry => entry_station,:exit => exit_station } ])
+    end
+  end
+
 end
